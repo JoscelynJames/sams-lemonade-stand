@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
 import './CheckAddress.css';
-const devUrl = 'https://g-blockchain-info-api.herokuapp.com/';
+import Transactions from '../Transactions/Transactions';
 
 class CheckAddress extends Component {
 	constructor(props) {
@@ -18,16 +16,8 @@ class CheckAddress extends Component {
 		this.setState({ address })
 	}
 
-	handleAdress(e) {
-		e.preventDefault();
-		axios.get(`${devUrl}rawaddr/${this.state.address}`)
-			.then((res) => {
-				console.log(res.data);
-			})
-	}
 
 	render() {
-	
 		return (
 			<div className="form">
 				<form>
@@ -38,7 +28,7 @@ class CheckAddress extends Component {
 						placeholder="14EunREvgpgMZ4ivRbzLwMn4mH2k5FsWL2">
 					</input>
 					<div>
-						<button onClick={(e) => this.handleAdress(e)}>Check Adress</button>
+						<a href={`/transactions/${this.state.address}`} className="button" >Check Adress</a>
 					</div>
 				</form>
 			</div>
