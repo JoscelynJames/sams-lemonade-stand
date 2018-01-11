@@ -12,8 +12,8 @@ class CheckAddress extends Component {
 	}
 
 	handleInput() {
-		let address = document.getElementsByClassName('adress-input')[0].value;
-		// console.log(address.replace(/,/g, "|"))
+		let address = document.getElementsByClassName('adress-input')[0].value.replace(/, /g, "|");
+		console.log(address)
 		this.setState({ address })
 	}
 
@@ -22,6 +22,7 @@ class CheckAddress extends Component {
 		return (
 			<div className="form">
 				<form>
+					<h3>Enter up to 2 public addresses here seperated by a comma</h3>
 					<input 
 						onChange={() => this.handleInput()} 
 						type="text" 
@@ -36,5 +37,8 @@ class CheckAddress extends Component {
 		);
 	}
 }
+
+// test addresses 
+// 1CVM9S4udKbpAAukTR5YMJi2FEqZHRdJdC, 1HzBaXgBZd9q8o7s6ZfEimQe6sxjtiJDC5
 
 export default CheckAddress;
