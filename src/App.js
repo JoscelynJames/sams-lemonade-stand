@@ -1,22 +1,17 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import { Route } from 'react-router-dom';
 
-import './App.css';
+import CheckAddress from './Components/CheckAddress/CheckAddress';
+import Transactions from './Components/Transactions/Transactions';
 
 class App extends Component {
-  componentDidMount() {
-    axios.get('https://g-blockchain-info-api.herokuapp.com/rawaddr/1AaT3EeMUPjQyw5orzi929SHfXQCehYZGp')
-      .then((res) => {
-        console.log(res);
-      })
-  }
-
   render() {
     return (
       <div className="App">
-        <h1>It's alive!</h1>
+        <Route path="/" exact component={CheckAddress} />
+        <Route path="/transactions" component={Transactions} />
       </div>
-    );
+    )
   }
 }
 
