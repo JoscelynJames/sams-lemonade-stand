@@ -13,6 +13,7 @@ class CheckAddress extends Component {
 
 	handleInput() {
 		let address = document.getElementsByClassName('adress-input')[0].value;
+		// console.log(address.replace(/,/g, "|"))
 		this.setState({ address })
 	}
 
