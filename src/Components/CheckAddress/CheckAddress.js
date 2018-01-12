@@ -12,7 +12,7 @@ class CheckAddress extends Component {
 	}
 
 	handleInput() {
-		let address = document.getElementsByClassName('adress-input')[0].value.replace(/, /g, "|");
+		let address = document.getElementsByClassName('adress-input')[0].value.replace(/, /g, "/");
 		console.log(address)
 		this.setState({ address })
 	}
@@ -39,6 +39,6 @@ class CheckAddress extends Component {
 }
 
 // test addresses 
-// 1CVM9S4udKbpAAukTR5YMJi2FEqZHRdJdC, 1HzBaXgBZd9q8o7s6ZfEimQe6sxjtiJDC5
+// 1CVM9S4udKbpAAukTR5YMJi2FEqZHRdJdC, 1HzBaXgBZd9q8o7s6ZfEimQe6sxjtiJDC5, 1Gr7LgKdyMZ3pGbmxFyXC2L61PpALokX7U <--- lots of trans
 
 export default CheckAddress;
