@@ -10,7 +10,7 @@ class App extends Component {
       <BrowserRouter>
         <div className="App">
           <Route path="/" exact component={CheckAddress} />
-          <Route path="/transactions/:address" component={Transactions} />
+          <Route path="/transactions/:addresses" component={Transactions} />
         </div>
       </BrowserRouter>
     )

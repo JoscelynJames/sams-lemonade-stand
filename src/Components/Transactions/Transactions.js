@@ -1,44 +1,97 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-const devUrl = 'https://g-blockchain-info-api.herokuapp.com/';
+import './Transactions.css'
+const devUrl = 'https://g-blockchain-info-api.herokuapp.com';
 
 class Transactions extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = { 
-			address: '',
-			totalSentInBTC: 0,
 			BTC_Exchange_Rate: 0,
-		}
+			addresses: [],
+			incomingTrans: [],
+		};
 	}
 
-	componentDidMount() {
-		axios.get(`${devUrl}multiaddr?active=${this.props.match.params.address}`)
-			.then((res) => {
-				console.log(res.data);
-				this.setState({ address: res.data.addresses[0].address, totalSentInBTC: res.data.addresses[0].total_sent / 100000000 })
-			})
+	componentWillMount() {
+		const addresses = this.props.match.params.addresses.split('|');
 
-		axios.get(`${devUrl}ticker`)
-			.then((res) => {
-				console.log(res.data.USD)
-				this.setState({ BTC_Exchange_Rate: res.data.USD.last })
-			})
+		this.getTransactions(addresses);
+		this.getExchangeRate(addresses);
 	}
 	
+	getTransactions(addresses) {
+		addresses.forEach(address => {
+			axios.get(`${devUrl}/rawaddr/${address}`)
+				.then((res) => {
+				this.checkTransaction(address, res.data.txs)
+				});
+		});
+	}
+
+	getExchangeRate(addresses) {
+		axios.get(`${devUrl}/ticker`)
+			.then((res) => {
+				this.setState({
+					BTC_Exchange_Rate: res.data.USD.last,
+					addresses,
+				});
+			});
+	}
+
+	checkTransaction(address, transactions) {
+		 return transactions.map(transaction => {
+			return transaction['out'].filter(t => {
+				if (t.addr === address) {
+					return this.setState({ 
+						incomingTrans: [...this.state.incomingTrans, t] 
+					});
+				}
+			});
+		});
+	}
+
 	render() {
 		return (
-			<div>
-				<h1>Current USD value of Bitcoin: ${this.state.BTC_Exchange_Rate}</h1>
-				<section>
-					<h1>Transactions for {this.state.address} :</h1>
-					<h4>Bitcoin Sent: {this.state.totalSentInBTC}</h4>
-					<h4>USD Sent: ${(this.state.totalSentInBTC * this.state.BTC_Exchange_Rate).toFixed(2)}</h4>
-				</section>
+			<div className="container">
+				<h1 className="important">Current USD value of Bitcoin: ${this.state.BTC_Exchange_Rate}</h1>
+				{this.state.addresses.map(address => {
+					return (
+						<div className="addr container" key={address}>
+							<h2 className="heading">{address}</h2>
+							{this.state.incomingTrans.map((trans, i) => {
+								if (trans.addr === address) {
+									return (
+									<TransactionCard 
+										key={i} 
+										address={address} 
+										amount={trans.value} 
+										btcEnchange={this.state.BTC_Exchange_Rate}/>
+									)
+								}
+							})}
+						</div>
+					)
+				})}
 			</div>
 		)
 	}
+}
+
+const numberWithCommas = (x) => {
+	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+const TransactionCard = (props) => {
+	const btc = props.amount / 100000000;
+	const usd = (btc * props.btcEnchange).toFixed(2)
+	return (
+		<div className="trans container">
+			<h3 className="amount">Amount in BTC: {btc}</h3>
+			<h3 className="amount">Amount in USD: ${numberWithCommas(usd)}</h3>
+		</div>
+	)
 }
 
 export default Transactions;
