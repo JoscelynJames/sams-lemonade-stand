@@ -10,7 +10,7 @@ class Transactions extends Component {
 			BTC_Exchange_Rate: 0,
 			addresses: [],
 			incomingTrans: [],
-		}
+		};
 	}
 
 	componentWillMount() {
@@ -25,9 +25,8 @@ class Transactions extends Component {
 			axios.get(`${devUrl}/rawaddr/${address}`)
 				.then((res) => {
 				this.checkTransaction(address, res.data.txs)
-				})
+				});
 		});
-
 	}
 
 	getExchangeRate(addresses) {
@@ -36,39 +35,50 @@ class Transactions extends Component {
 				this.setState({
 					BTC_Exchange_Rate: res.data.USD.last,
 					addresses,
-				})
-			})
+				});
+			});
 	}
 
-	checkTransaction(address, transaction) {
-		 return transaction.map(txs => {
-			return txs['out'].filter(t => {
+	checkTransaction(address, transactions) {
+		 return transactions.map(transaction => {
+			return transaction['out'].filter(t => {
 				if (t.addr === address) {
 					return this.setState({ 
 						incomingTrans: [...this.state.incomingTrans, t] 
-					})
+					});
 				}
-			})
-		})
+			});
+		});
 	}
 
 	render() {
 		return (
 			<div>
 				<h1>Current USD value of Bitcoin: ${this.state.BTC_Exchange_Rate}</h1>
-				{/* <h2>Transactions for {this.props.match.params.address} :</h2>
-				{this.state.addresses.map((address, i) => {
-					console.log(address)
-						return (
-						<section key={i}>
-							<h4>Bitcoin Sent: {address.total_sent / 100000000}</h4>
-								<h4>USD Sent: ${((address.total_sent / 100000000 )* this.state.BTC_Exchange_Rate).toFixed(2)}</h4>
-						</section>
-						)
-				})} */}
+				{this.state.addresses.map(address => {
+					return (
+						<div key={address}>
+							<h2>Transactions for {address}</h2>
+							{this.state.incomingTrans.map((trans, i) => {
+								if (trans.addr === address) {
+									return <TransactionCard key={i} address={address} amount={trans.value} btcEnchange={this.state.BTC_Exchange_Rate}/>
+								}
+							})}
+						</div>
+					)
+				})}
 			</div>
 		)
 	}
+}
+
+const TransactionCard = (props) => {
+	return (
+		<div>
+			<h3>amount traded in BTC: {props.amount / 100000000}</h3>
+			<h3>amount traded in USD: ${((props.amount / 100000000) * props.btcEnchange).toFixed(2)}</h3>
+		</div>
+	)
 }
 
 export default Transactions;

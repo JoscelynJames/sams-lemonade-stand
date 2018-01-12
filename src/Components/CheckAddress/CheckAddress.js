@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import './CheckAddress.css';
-import Transactions from '../Transactions/Transactions';
 
 class CheckAddress extends Component {
 	constructor(props) {
@@ -14,7 +13,7 @@ class CheckAddress extends Component {
 	handleInput() {
 		let address = document.getElementsByClassName('adress-input')[0].value.replace(/, /g, "/");
 		console.log(address)
-		this.setState({ address })
+		this.setState({ address });
 	}
 
 
