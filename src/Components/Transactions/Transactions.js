@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import './Transactions.css'
 const devUrl = 'https://g-blockchain-info-api.herokuapp.com';
 
 class Transactions extends Component {
@@ -53,15 +54,21 @@ class Transactions extends Component {
 
 	render() {
 		return (
-			<div>
-				<h1>Current USD value of Bitcoin: ${this.state.BTC_Exchange_Rate}</h1>
+			<div className="container">
+				<h1 className="important">Current USD value of Bitcoin: ${this.state.BTC_Exchange_Rate}</h1>
 				{this.state.addresses.map(address => {
 					return (
-						<div key={address}>
-							<h2>Transactions for {address}</h2>
+						<div className="addr container" key={address}>
+							<h2 className="heading">{address}</h2>
 							{this.state.incomingTrans.map((trans, i) => {
 								if (trans.addr === address) {
-									return <TransactionCard key={i} address={address} amount={trans.value} btcEnchange={this.state.BTC_Exchange_Rate}/>
+									return (
+									<TransactionCard 
+										key={i} 
+										address={address} 
+										amount={trans.value} 
+										btcEnchange={this.state.BTC_Exchange_Rate}/>
+									)
 								}
 							})}
 						</div>
@@ -72,11 +79,17 @@ class Transactions extends Component {
 	}
 }
 
+const numberWithCommas = (x) => {
+	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 const TransactionCard = (props) => {
+	const btc = props.amount / 100000000;
+	const usd = (btc * props.btcEnchange).toFixed(2)
 	return (
-		<div>
-			<h3>amount traded in BTC: {props.amount / 100000000}</h3>
-			<h3>amount traded in USD: ${((props.amount / 100000000) * props.btcEnchange).toFixed(2)}</h3>
+		<div className="trans container">
+			<h3 className="amount">Amount in BTC: {btc}</h3>
+			<h3 className="amount">Amount in USD: ${numberWithCommas(usd)}</h3>
 		</div>
 	)
 }
