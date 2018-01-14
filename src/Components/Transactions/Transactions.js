@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import axios from 'axios';
+import store from '../../index';
 import './Transactions.css'
 const devUrl = 'https://g-blockchain-info-api.herokuapp.com';
 
@@ -9,68 +11,49 @@ class Transactions extends Component {
 
 		this.state = { 
 			BTC_Exchange_Rate: 0,
-			addresses: [],
-			incomingTrans: [],
 		};
 	}
 
 	componentWillMount() {
-		const addresses = this.props.match.params.addresses.split('|');
+		store.subscribe(() => {
+			store.getState()
+		})
 
-		this.getTransactions(addresses);
-		this.getExchangeRate(addresses);
-	}
-	
-	getTransactions(addresses) {
-		addresses.forEach(address => {
-			axios.get(`${devUrl}/rawaddr/${address}`)
-				.then((res) => {
-				this.checkTransaction(address, res.data.txs)
-				});
-		});
+		this.getExchangeRate();
 	}
 
-	getExchangeRate(addresses) {
+	getExchangeRate() {
 		axios.get(`${devUrl}/ticker`)
 			.then((res) => {
 				this.setState({
 					BTC_Exchange_Rate: res.data.USD.last,
-					addresses,
 				});
 			});
-	}
-
-	checkTransaction(address, transactions) {
-		 return transactions.map(transaction => {
-			return transaction['out'].filter(t => {
-				if (t.addr === address) {
-					return this.setState({ 
-						incomingTrans: [...this.state.incomingTrans, t] 
-					});
-				}
-			});
-		});
 	}
 
 	render() {
 		return (
 			<div className="container">
 				<h1 className="important">Current USD value of Bitcoin: ${this.state.BTC_Exchange_Rate}</h1>
-				{this.state.addresses.map(address => {
+				{this.props.transactionArrays.map(address => {
+					const addr = address.address
 					return (
-						<div className="addr container" key={address}>
-							<h2 className="heading">{address}</h2>
-							{this.state.incomingTrans.map((trans, i) => {
-								if (trans.addr === address) {
-									return (
-									<TransactionCard 
-										key={i} 
-										address={address} 
-										amount={trans.value} 
-										btcEnchange={this.state.BTC_Exchange_Rate}/>
-									)
-								}
+						<div className="addr container" key={addr}>
+							<h2 className="heading">{addr}</h2>
+							{address.txs.map((trans) => {
+								return trans.out.map(tran => {
+									if (tran.addr === addr) {
+										console.log('[TRAN]', tran)
+										return (
+											<TransactionCard
+												address={addr}
+												amount={tran.value}
+												btcEnchange={this.state.BTC_Exchange_Rate} />
+										)
+									} 
+								})
 							})}
+
 						</div>
 					)
 				})}
@@ -94,4 +77,10 @@ const TransactionCard = (props) => {
 	)
 }
 
-export default Transactions;
+const mapStateToProps = (state) => {
+	return {
+		transactionArrays: state.transactions
+	}
+}
+
+export default connect(mapStateToProps)(Transactions);
