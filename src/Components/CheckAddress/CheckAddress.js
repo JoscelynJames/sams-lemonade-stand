@@ -23,9 +23,8 @@ class CheckAddress extends Component {
 			return this.props.fetchTransactions(address);
 		})
 	
-		this.props.history.push('./transactions')
+		this.props.history.push('./transactions');
 	}
-
 
 	render() {
 		return (

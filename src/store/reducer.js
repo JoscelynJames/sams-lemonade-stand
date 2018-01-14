@@ -6,7 +6,7 @@ const reducer = (state = initalState, action) => {
 	if (action.type === 'FETCH_TRANSACTIONS_SUCCESS') {
 		return {
 			...state,
-			transactions: [...state.transactions, action.body.data.txs]
+			transactions: [...state.transactions, action.body.data]
 		};
 	}
 
