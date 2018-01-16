@@ -1,5 +1,6 @@
 const initalState = {
-	transactions: []
+	transactions: [],
+	loading: true
 }
 
 const reducer = (state = initalState, action) => {
@@ -8,6 +9,13 @@ const reducer = (state = initalState, action) => {
 			...state,
 			transactions: [...state.transactions, action.body.data]
 		};
+	}
+
+	if (action.type === 'SET_LOADING_STATE') {
+		return {
+			...state,
+			loading: action.body
+		}
 	}
 
 	return state;

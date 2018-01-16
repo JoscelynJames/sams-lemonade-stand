@@ -1,0 +1,15 @@
+.nav {
+	display: flex;
+	align-items: center;
+	font-family: 'Montserrat', sans-serif;
+	background-color: rgb(255, 255, 213);
+}
+
+.lemon {
+	width: 10vw;
+}
+
+.name h3 {
+	font-size: 30px;
+	cursor: pointer
+}

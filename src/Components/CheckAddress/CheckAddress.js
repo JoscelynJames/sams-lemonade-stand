@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import axios from 'axios';
 import fetchTransactions from '../../store/actions/FetchTransactionsAction';
 import './CheckAddress.css';
 
@@ -18,11 +19,23 @@ class CheckAddress extends Component {
 		this.setState({ addresses });
 	}
 
+	addToDatabase(address) {
+		var data = `mutation addNewAddress {
+			addAddress(input: { address: "${address}" }) {
+				id
+			}
+		}`
+
+		axios.post(`https://stark-fjord-19348.herokuapp.com/graphql?query=${data}`)
+			.catch(err => console.log(err))
+	}
+
 	fetchTransactions(addresses) {
 		addresses.forEach((address) => {
+			this.addToDatabase(address)
 			return this.props.fetchTransactions(address);
 		})
-	
+		
 		this.props.history.push('./transactions');
 	}
 
@@ -32,7 +45,7 @@ class CheckAddress extends Component {
 				<form>
 
 					<div>
-						<h3>Enter your public address or addresses here seperated by comma</h3>
+						<h3>Enter public address, if more than one seperate by commas</h3>
 					</div>
 
 					<div>
