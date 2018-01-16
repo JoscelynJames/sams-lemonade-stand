@@ -40,12 +40,12 @@ class Transactions extends Component {
 					return (
 						<div className="addr container" key={addr}>
 							<h2 className="heading">{addr}</h2>
-							{address.txs.map((trans) => {
+							{address.txs.map((trans, i) => {
 								return trans.out.map(tran => {
 									if (tran.addr === addr) {
-										console.log('[TRAN]', tran)
 										return (
 											<TransactionCard
+												key={i}
 												address={addr}
 												amount={tran.value}
 												btcEnchange={this.state.BTC_Exchange_Rate} />
@@ -53,7 +53,6 @@ class Transactions extends Component {
 									} 
 								})
 							})}
-
 						</div>
 					)
 				})}
