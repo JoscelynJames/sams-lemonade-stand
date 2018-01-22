@@ -5,7 +5,7 @@ import './Nav.css'
 class Nav extends Component {
 
 	handleClick() {
-		this.props.history.push('./');
+		this.props.history.push('/');
 	}
 
 	render() {
@@ -14,11 +14,9 @@ class Nav extends Component {
 				<div>
 					<img className="lemon" src={lemon} alt="" />
 				</div>
-
 				<div className="name">
 					<h3 onClick={() => this.handleClick()} >Sam's Lemonade</h3>
 				</div>
-
 			</div>
 		)
 	}

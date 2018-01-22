@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import fetchTransactions from '../../store/actions/FetchTransactionsAction';
 import axios from 'axios';
 import store from '../../index';
 import './Transactions.css'
 import TransactionCard from './components/TransactionCard';
-import loading from '../../loader.gif'
+import loading from '../../loader.gif';
 const devUrl = 'https://g-blockchain-info-api.herokuapp.com';
 
 export class Transactions extends Component {
@@ -17,20 +19,33 @@ export class Transactions extends Component {
 		};
 	}
 
+	componentDidMount() {
+		const addresses = this.props.match.params.addr.split(',');
+		addresses.forEach((address) => {
+			this.addToDatabase(address)
+			return this.props.fetchTransactions(address);
+		})
+		this.getExchangeRate()
+	}
+
+
+	addToDatabase(address) {
+		var data = `mutation addNewAddress {
+			addAddress(input: { address: "${address}" }) {
+				id
+			}
+		}`
+
+		axios.post(`https://stark-fjord-19348.herokuapp.com/graphql?query=${data}`)
+			.catch(err => console.log(err))
+	}
+
 	static Loading = () => {
 		return (
 			<div className="loading">
 				<img src={loading} alt="loading" />
 			</div>
 		)
-	}
-
-	componentWillMount() {
-		this.getExchangeRate();
-		store.subscribe(() => {
-			store.getState()
-		})
-
 	}
 
 	getExchangeRate() {
@@ -103,4 +118,11 @@ const mapStateToProps = (state) => {
 	}
 }
 
-export default connect(mapStateToProps)(Transactions);
+const mapDispatchToProps = (dispatch) => {
+	return bindActionCreators({
+		fetchTransactions,
+	}, dispatch)
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Transactions);
