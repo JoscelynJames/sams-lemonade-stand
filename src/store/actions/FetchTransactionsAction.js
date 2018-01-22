@@ -8,6 +8,13 @@ function fetchTransactionsSuccess(body) {
 	};
 }
 
+function fetchTransactionsErr(body) {
+	return {
+		type: 'FETCH_TRANSACTIONS_ERR',
+		body,
+	};
+}
+
 function setLoadingState(body) {
 	return {
 		type: 'SET_LOADING_STATE',
@@ -24,6 +31,8 @@ export default function fetchTransactions(addresses) {
 			.then(() => {
 				return dispatch(setLoadingState(false))
 			})			
-			.catch(err => console.log(err));
+			.catch(err => {
+				return dispatch(fetchTransactionsErr(err));
+			});
 	};
 }

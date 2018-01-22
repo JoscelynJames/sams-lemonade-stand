@@ -1,6 +1,7 @@
 const initalState = {
 	transactions: [],
-	loading: true
+	loading: true,
+	error: false,
 }
 
 const reducer = (state = initalState, action) => {
@@ -15,6 +16,19 @@ const reducer = (state = initalState, action) => {
 		return {
 			...state,
 			loading: action.body
+		}
+	}
+
+	if (action.type === 'FETCH_TRANSACTIONS_ERR') {
+		return {
+			...state,
+			error: true
+		}
+	}
+
+	if (action.type === 'RESET') {
+		return {
+			...initalState
 		}
 	}
 

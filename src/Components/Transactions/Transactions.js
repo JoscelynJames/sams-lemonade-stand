@@ -7,6 +7,7 @@ import store from '../../index';
 import './Transactions.css'
 import TransactionCard from './components/TransactionCard';
 import loading from '../../loader.gif';
+
 const devUrl = 'https://g-blockchain-info-api.herokuapp.com';
 
 export class Transactions extends Component {
@@ -102,6 +103,13 @@ export class Transactions extends Component {
 	}
 
 	render() {
+		if (this.props.error) {
+			return (
+				<div>
+					Lets try that again. It looks like the public address entered isn't found
+				</div>
+			)
+		}
 		return (
 			<div className="container">
 				<h1 className="important">Current USD value of Bitcoin: ${this.state.BTC_Exchange_Rate}</h1>
@@ -114,7 +122,8 @@ export class Transactions extends Component {
 const mapStateToProps = (state) => {
 	return {
 		transactionArrays: state.transactions,
-		loading: state.loading
+		loading: state.loading,
+		error: state.error,
 	}
 }
 
